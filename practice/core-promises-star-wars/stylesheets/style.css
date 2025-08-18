@@ -1,0 +1,68 @@
+@font-face {
+  font-family: "Star Jedi";
+  src: url("../fonts/star-jedi.ttf");
+}
+
+body * {
+  font-family: "Star Jedi", arial;
+  text-transform: lowercase;
+}
+
+body {
+  background-color: #E2E3E5;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden;
+  background-image: url(../images/at-st.jpg);
+}
+
+ul>li>ul>li {
+  margin-left: 30px;
+}
+
+.search {
+  display: flex;
+}
+
+#content {
+  max-height: 35vh;
+  min-height: 35vh;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+#result-container {
+  visibility: hidden;
+}
+
+.spinner {
+  visibility: hidden;
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  -webkit-animation: spin 1s linear infinite;
+  -moz-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
