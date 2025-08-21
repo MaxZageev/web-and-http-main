@@ -79,3 +79,38 @@ ul>li>ul>li {
 #spinner.is-visible { visibility: visible; }
 
 
+/* единая строка — ровные высоты */
+#searchBlock .select, 
+#searchBlock .input, 
+#searchBlock .button {
+  height: 48px;
+}
+
+/* чтобы инпут не «прыгался» при смене режима */
+#searchInput[type="number"] {
+  -moz-appearance: textfield;
+}
+#searchInput[type="number"]::-webkit-outer-spin-button,
+#searchInput[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Все элементы в строке поиска должны быть одинаковой высоты */
+#searchBlock .select select,
+#searchBlock .input,
+#searchBlock .button {
+  height: 3rem;        /* одинаковая высота */
+  font-size: 1rem;     /* одинаковый размер текста */
+  line-height: 1.5rem; /* центрируем текст */
+  padding-top: 0;      
+  padding-bottom: 0;   
+}
+
+/* Чтобы select тоже вел себя как input */
+#searchBlock .select {
+  height: 3rem;
+}
+#searchBlock .select select {
+  height: 100%;
+}

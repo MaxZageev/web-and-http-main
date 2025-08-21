@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Подключаем css-фреймворк Bulma -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-  <!-- Библиотека иконок Fontawesome -->
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
-  <!-- Наши стили -->
   <link rel="stylesheet" href="stylesheets/style.css">
 
-  <!-- Библотека методов для получения данных про Star Wars -->
   <script defer src="lib/star-wars.js"></script>
-  <!-- Скрипт, который вам предстоит написать! -->
   <script defer src="scripts/search.js"></script>
 
   <title>STAR WARS</title>
 </head>
-
 <body>
   <header>
     <div class="column is-3">
@@ -30,38 +23,51 @@
 
   <main>
     <section class="section">
-      <div class="column is-half is-offset-2">
-        <div id="byQueryBlock" class="search">
-          <input class="is-large input" type="text" placeholder="Search...">
-          <button id="byQueryBtn" class="is-large button">Search</button>
+      <div class="column is-8 is-offset-2">
+        <!-- ЕДИНАЯ СТРОКА ПОИСКА -->
+        <div id="searchBlock" class="field has-addons">
+          <div class="control">
+            <div class="select is-large">
+              <select id="searchMode">
+                <option value="query" selected>By Name</option>
+                <option value="id">By ID</option>
+              </select>
+            </div>
+          </div>
+          <div class="control">
+            <div class="select is-large">
+              <select id="resourceSelect">
+                <option value="characters" selected>People</option>
+                <option value="planets">Planets</option>
+                <option value="species">Species</option>
+              </select>
+            </div>
+          </div>
+          <div class="control is-expanded">
+            <input id="searchInput" class="is-large input" type="text" placeholder="Search…">
+          </div>
+          <div class="control">
+            <button id="searchBtn" class="is-large button">GO</button>
+          </div>
         </div>
       </div>
     </section>
 
-    <div class="spinnerContainer">
-      <img id="spinner" class="spinner" src="images/dv.png" alt="">
-    </div>
+    <!-- Спиннер -->
+    <img id="spinner" class="spinner" src="images/dv.png" alt="">
 
+    <!-- Контейнер результата -->
     <section class="section">
-
-      <div id="result-container" class="column is-5 is-offset-2">
+      <div id="result-container" class="column is-6 is-offset-2">
         <article class="message is-dark">
           <div class="message-header">
-            <p>Primary</p>
+            <p>Results</p>
             <button class="delete" aria-label="delete"></button>
           </div>
-          <div id="content" class="message-body">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis
-            placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et
-            dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales,
-            arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna,
-            vehicula et sem eget, facilisis sodales sem.
-          </div>
+          <div id="content" class="message-body"></div>
         </article>
       </div>
-
     </section>
   </main>
 </body>
-
 </html>
