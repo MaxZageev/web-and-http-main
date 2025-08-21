@@ -95,6 +95,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+        // realise 2 
+        // Вытянуть числовой id из конца URL: .../planets/1/ -> "1"
+        const extractIdFromUrl = (url) => {
+          const m = String(url || '').match(/\/(\d+)\/?$/);
+          return m ? m[1] : null;
+        };
+
+        // Получить имя планеты и подменить поле homeworld у персонажа
+        async function replaceHomeworldWithName(person) {
+          const id = extractIdFromUrl(person?.homeworld);
+          if (!id) {
+            // если поле пустое или без id, оставим как есть
+            return person;
+          }
+          try {
+            const planet = await starWars.getPlanetsById(id);
+            // ЗАДАНИЕ: заменить ссылку на наименование
+            person.homeworld = planet?.name || 'unknown';
+          } catch {
+            person.homeworld = 'unknown';
+          }
+          return person;
+        }
+
+// Пробежать по всем персонажам параллельно
+async function enrichHomeworlds(results) {
+  await Promise.all(results.map(replaceHomeworldWithName));
+}
+
   // основное действие — поиск и рендер карточек
   async function searchByQuery() {
     const q = input.value.trim();
@@ -117,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         render('<p class="is-size-5">Ничего не найдено.</p>');
         return;
       }
-
+        // realease 2: подменяем homeworld-URL на имя планеты (параллельно)
+        await enrichHomeworlds(results);        
       // карточки с полной инфой
       const cards = results.map(renderPersonCard).join('');
       render(`
