@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchBtn  = document.getElementById('byQueryBtn');        // кнопка поиска
   const spinner = document.getElementById('spinner');              // индикатор поиска
 
-  const safe = (v) => { const d = document.createElement('div'); d.textContent = String(v ?? ''); return d.innerHTML; };
-  const isLikelyUrl = (v) => typeof v === 'string' && /^https?:\/\//i.test(v);
+  const safe = (v) => { const d = document.createElement('div'); d.textContent = String(v ?? ''); return d.innerHTML; }; // защита от спецсимволов 
+  const isLikelyUrl = (v) => typeof v === 'string' && /^https?:\/\//i.test(v); // проверяем строку не является ли она ссылкой
 
   const linkify = (v) => {
     if (isLikelyUrl(v)) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<a href="${href}" target="_blank" rel="noopener noreferrer">${href}</a>`;
     }
     return safe(v);
-  };
+  }; // делаем ссылки кликабельными  и защищаем их noopener noreferrer
 
   const formatValue = (val) => {
     if (Array.isArray(val)) {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<pre style="white-space:pre-wrap">${safe(JSON.stringify(val, null, 2))}</pre>`;
     }
     return linkify(val);
-  };
+  };   // форматируем полученные с апи значения
 
   const renderPersonCard = (person) => {
     // верхний заголовок — name, ниже — все остальные поля ключ: значение
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const q = input.value.trim();
 
     if (!q) {
-      render('<p class="is-size-5">Введите строку для поиска.</p>');
+      render('<p class="is-size-5">Write Name.</p>');
       hideSpinner();
       return;
     }
