@@ -13,6 +13,8 @@ body {
   min-height: 100vh;
   max-height: 100vh;
   overflow-y: hidden;
+  background-size: cover;
+  background-position: right top;
   background-image: url(../images/at-st.jpg);
 }
 
@@ -36,7 +38,6 @@ ul>li>ul>li {
 }
 
 .spinner {
-  visibility: hidden;
   position: absolute;
   top: 50vh;
   left: 50vw;
@@ -46,6 +47,7 @@ ul>li>ul>li {
   -webkit-animation: spin 1s linear infinite;
   -moz-animation: spin 1s linear infinite;
   animation: spin 1s linear infinite;
+  z-index: 1000;
 }
 
 @-moz-keyframes spin {
@@ -66,3 +68,14 @@ ul>li>ul>li {
     transform: rotate(360deg);
   }
 }
+
+
+/* Контейнер результата */
+#result-container { visibility: hidden; }
+#result-container.is-visible { visibility: visible; }
+
+/* Спиннер */
+#spinner { visibility: hidden; }
+#spinner.is-visible { visibility: visible; }
+
+
