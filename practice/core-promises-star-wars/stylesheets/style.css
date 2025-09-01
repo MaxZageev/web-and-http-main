@@ -114,3 +114,39 @@ ul>li>ul>li {
 #searchBlock .select select {
   height: 100%;
 }
+
+.skeleton-line {
+  position: relative;
+  overflow: hidden;
+  background-color: #eee;
+  border-radius: 4px;
+  margin: 6px 0;
+  height: 0.8em;
+}
+
+.skeleton-line.title {
+  height: 1.2em;
+  width: 50%;
+  margin-bottom: 8px;
+}
+
+.skeleton-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px; /* старт градиента */
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.4) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}

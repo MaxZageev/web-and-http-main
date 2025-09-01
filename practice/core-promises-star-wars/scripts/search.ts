@@ -37,7 +37,6 @@ const linkify = (v: unknown): string =>
       )}</a>`
     : safe(v);
 
-// --- Ограничение списков ---
 const MAX_LIST = 3;
 
 const formatArrayLimited = (arr: unknown[]): string => {
@@ -77,6 +76,19 @@ const formatValue = (val: unknown): string => {
   return linkify(val);
 };
 
+// --- Скелетон ---
+const renderSkeleton = (): HTMLElement => {
+  const div = document.createElement('div');
+  div.className = 'box skeleton';
+  div.innerHTML = `
+    <div class="skeleton-line title"></div>
+    <div class="skeleton-line" style="width:80%"></div>
+    <div class="skeleton-line" style="width:60%"></div>
+    <div class="skeleton-line" style="width:70%"></div>
+  `;
+  return div;
+};
+
 // --- Рендер карточки ---
 const renderCard = (obj: SWEntity): string => {
   const rows = Object.entries(obj as object)
@@ -107,18 +119,10 @@ const renderCard = (obj: SWEntity): string => {
 };
 
 // --- Панель / спиннер ---
-const showResultWrap = () => {
-  resultWrap.classList.add('is-visible');
-};
-const hideResultWrap = () => {
-  resultWrap.classList.remove('is-visible');
-};
-const showSpinner = () => {
-  spinner.classList.add('is-visible');
-};
-const hideSpinner = () => {
-  spinner.classList.remove('is-visible');
-};
+const showResultWrap = () => resultWrap.classList.add('is-visible');
+const hideResultWrap = () => resultWrap.classList.remove('is-visible');
+const showSpinner = () => spinner.classList.add('is-visible');
+const hideSpinner = () => spinner.classList.remove('is-visible');
 const render = (html: string) => {
   content.innerHTML = html;
   showResultWrap();
@@ -141,7 +145,7 @@ const extractIdFromUrl = (url: string | undefined | null): string | null => {
 };
 
 // ===============================
-//  Замена URL -> имена (дженерики без Record)
+//  Замена URL -> имена
 // ===============================
 async function replaceUrlFieldWithName<T, K extends keyof T>(
   obj: T,
@@ -181,7 +185,7 @@ async function replaceUrlArrayWithNames<T, K extends keyof T>(
   return obj;
 }
 
-// --- Обогащение результатов ---
+// --- Обогащение ---
 async function enrichCharacter(p: Character): Promise<Character> {
   await replaceUrlFieldWithName(p, 'homeworld', (id) => starWars.getPlanetsById(id));
   await replaceUrlArrayWithNames(p, 'species', (id) => starWars.getSpeciesById(id));
@@ -202,7 +206,38 @@ async function enrichSpecies(sp: Species): Promise<Species> {
   return sp;
 }
 
-// --- Поиск по строке ---
+// ===============================
+//  Прогрессивный рендер
+// ===============================
+async function progressiveRender<T extends SWEntity>(
+  results: T[],
+  resource: Resource
+): Promise<void> {
+  content.innerHTML = `<h2 class="title is-4">Loading ${resource}…</h2>`;
+  showResultWrap();
+
+  const skeletons = results.map(() => renderSkeleton());
+  skeletons.forEach((sk) => content.appendChild(sk));
+
+  const enrich =
+    resource === 'characters'
+      ? enrichCharacter
+      : resource === 'planets'
+      ? enrichPlanet
+      : enrichSpecies;
+
+  results.forEach(async (item, i) => {
+    try {
+      await enrich(item as any);
+      skeletons[i].outerHTML = renderCard(item);
+    } catch (err) {
+      console.error('Enrich error:', err);
+      skeletons[i].outerHTML = `<div class="box has-background-danger-light">Ошибка загрузки</div>`;
+    }
+  });
+}
+
+// --- Поиск по строке (с прогрессивным рендером) ---
 async function searchByQuery(q: string, resource: Resource): Promise<void> {
   let data: ApiResponse<Character | Planet | Species>;
   if (resource === 'characters') data = await starWars.searchCharacters(q);
@@ -215,21 +250,10 @@ async function searchByQuery(q: string, resource: Resource): Promise<void> {
     return;
   }
 
-  if (resource === 'characters') await Promise.all((results as Character[]).map(enrichCharacter));
-  else if (resource === 'planets') await Promise.all((results as Planet[]).map(enrichPlanet));
-  else await Promise.all((results as Species[]).map(enrichSpecies));
-
-  const titleMap: Record<Resource, string> = {
-    characters: 'Results (people)',
-    planets: 'Results (planets)',
-    species: 'Results (species)',
-  };
-
-  const cards = (results as SWEntity[]).map((r) => renderCard(r)).join('');
-  render(`<h2 class="title is-4">${titleMap[resource] ?? 'Results'}</h2>${cards}`);
+  await progressiveRender(results as SWEntity[], resource);
 }
 
-// --- Поиск по ID ---
+// --- Поиск по ID (с прогрессивным рендером, один элемент) ---
 async function getById(id: number, resource: Resource): Promise<void> {
   let item: SWEntity;
   if (resource === 'characters') item = await starWars.getCharactersById(id);
@@ -241,17 +265,7 @@ async function getById(id: number, resource: Resource): Promise<void> {
     return;
   }
 
-  if (resource === 'characters') await enrichCharacter(item as Character);
-  else if (resource === 'planets') await enrichPlanet(item as Planet);
-  else await enrichSpecies(item as Species);
-
-  const titleMap: Record<Resource, string> = {
-    characters: 'Item (person)',
-    planets: 'Item (planet)',
-    species: 'Item (species)',
-  };
-
-  render(`<h2 class="title is-4">${titleMap[resource] ?? 'Item'}</h2>${renderCard(item)}`);
+  await progressiveRender([item], resource);
 }
 
 // --- Управление инпутом ---
