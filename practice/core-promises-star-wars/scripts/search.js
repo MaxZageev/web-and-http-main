@@ -121,6 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
   async function enrichCharacter(p) {
     await replaceUrlFieldWithName(p, 'homeworld', (id) => starWars.getPlanetsById(id));
     await replaceUrlArrayWithNames(p, 'species',   (id) => starWars.getSpeciesById(id));
+    await replaceUrlArrayWithNames(p, 'films',   (id) => starWars.getFilmsById(id));
+    await replaceUrlArrayWithNames(p, 'vehicles',   (id) => starWars.getVehiclesById(id));
+     await replaceUrlArrayWithNames(p, 'starships',   (id) => starWars.getStarshipsById(id));
     return p;
   }
   async function enrichPlanet(pl) {

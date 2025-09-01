@@ -46,6 +46,7 @@ const starWars = {
     });
   },
 
+ 
   // --- Get By Id Methods ---
 
   getCharactersById: async (id) => (await (
@@ -62,5 +63,11 @@ const starWars = {
 
   getFilmsById: async (id) => (await (
     await fetch(`https://swapi.py4e.com/api/films/${id}`)
+  ).json()),
+   getVehiclesById: async (id) => (await (
+    await fetch(`https://swapi.py4e.com/api/vehicles/${id}`)
+  ).json()),
+  getStarshipsById: async (id) => (await (
+    await fetch(`https://swapi.py4e.com/api/starships/${id}`)
   ).json()),
 }
